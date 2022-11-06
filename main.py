@@ -49,6 +49,17 @@ payload = {
 
 session = requests.Session()
 payload = urlencode(payload)
-data = session.post(url, headers=headers, data=payload)
+ticketLoad = False
+while ticketLoad == False:
+    try:
+        data = session.post(url, headers=headers, data=payload, timeout=5)
+        htmlPage = soup(data.text, "lxml")
+        if "You will be held at this page until there is a free space on the booking site" in str(htmlPage):
+            print("You will be held at this page until there is a free space on the booking site")
+            ticketLoad = False
+        else:
+            ticketLoad = True
+    except Exception as e:
+        print("Haven't carted")
 print(data.url)
 print(session.cookies.get_dict())
